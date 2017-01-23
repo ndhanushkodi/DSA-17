@@ -3,30 +3,44 @@ public class MyArrayList {
 	private int size;
 
 	public MyArrayList() {
-		// TODO
+		elems = new Cow[10];
+		size = 0;
 	}
 
 	public MyArrayList(int capacity) {
-		// TODO
+		elems = new Cow[capacity];
+		size = 0;
 	}
 
 	public void add(Cow c) {
-		// TODO
+		//if(size==elems.length){
+		//doubleSize();
+	   //}
+		elems[size] = c;
+		size++;
 	}
 
 	public int size() {
-		// TODO
-		return -1;
+		return size;
 	}
 
 	public Cow get(int index) {
-		// TODO
-		return null;
+		if(index >= size || index < 0) throw new IndexOutOfBoundsException("Index out of bounds");
+		return elems[index];
 	}
 
 	public Cow remove(int index) {
-		// TODO
-		return null;
+		Cow removed = elems[index];
+
+		int elemToMoveUp = index+1; //start at next index
+
+		while(elemToMoveUp < size){
+			elems[elemToMoveUp-1] = elems[elemToMoveUp];
+			elemToMoveUp++;
+		}
+
+		size = size - 1;
+		return removed;
 	}
 
 	public void add(int index, Cow c) {
