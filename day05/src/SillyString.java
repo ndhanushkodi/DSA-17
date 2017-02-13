@@ -33,6 +33,7 @@ public class SillyString {
 	public static void main(String[] args) {
         SillyString first = new SillyString("Hello");
 		SillyString second = new SillyString("World");
+		SillyString third = new SillyString("dlorW");
 
 		System.out.println(first.hashCode());
 		System.out.println(second.hashCode());

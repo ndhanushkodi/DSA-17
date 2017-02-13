@@ -1,8 +1,26 @@
+import java.util.Map;
 public class Boomerang {
 
     public static int numberOfBoomerangs(int[][] points) {
-        // TODO
-        return 0;
+        int res = 0;
+
+        Map<Integer, Integer> map = new MyHashMap<>();
+        for (int i=0; i<points.length; i++) {
+            for (int j=0; j<points.length; j++) {
+                if (i == j)
+                    continue;
+
+                int d = getSquaredDistance(points[i], points[j]);
+                map.put(d, map.getOrDefault(d, 0) + 1);
+            }
+
+            for (int val : map.values()) {
+                res += val * (val-1);
+            }
+            map.clear();
+        }
+
+        return res;
     }
 
     private static int getSquaredDistance(int[] a, int[] b) {

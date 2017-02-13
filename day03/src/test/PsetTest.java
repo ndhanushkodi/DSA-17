@@ -4,11 +4,23 @@ import ADTs.StackADT;
 import org.junit.Test;
 import your_code.MyStack;
 import your_code.PsetProblems;
+import your_code.MyPriorityQueue;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 public class PsetTest {
+
+    @Test
+    public void testPriorityQueue(){
+        MyPriorityQueue q = new MyPriorityQueue();
+        q.enqueue(1);
+        q.enqueue(2);
+        q.enqueue(3);
+        assertThat(q.dequeueMax(), is(3));
+        assertThat(q.dequeueMax(), is(2));
+        assertThat(q.dequeueMax(), is(1));
+    }
 
     @Test
     public void testLongestValidSubstring() {

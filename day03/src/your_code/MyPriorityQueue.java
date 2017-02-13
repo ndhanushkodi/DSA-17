@@ -12,15 +12,20 @@ public class MyPriorityQueue {
     }
 
     public void enqueue(int item) {
-        // TODO
+        for(int i=0; i<l.size(); i++){
+            if(l.get(i).compareTo(item) > 0){
+                l.add(i, item);
+                return;
+            }
+        }
+        l.add(item); //add it at the end if its the smallest
     }
 
     /**
      * Return and remove the largest item on the queue.
      */
     public int dequeueMax() {
-        // TODO
-        return -1;
+        return l.remove(l.size()-1);
     }
 
 }
