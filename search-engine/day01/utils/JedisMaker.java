@@ -113,6 +113,9 @@ public class JedisMaker {
         - Retrieve that value
         - Print it
          */
+		jedis.set("key", "value");
+		String value = jedis.get("key");
+		System.out.println(value);
 
 		// Set
         /*
@@ -121,6 +124,9 @@ public class JedisMaker {
         - Print whether "merge" is a member of that set
         - Print whether "insertion" is a member of that set
          */
+		jedis.sadd("sorts", "quick", "merge", "heap");
+		boolean isMember =  jedis.sismember("sorts", "merge");
+		System.out.println(isMember);
 
 		// List
         /*
@@ -128,6 +134,8 @@ public class JedisMaker {
         "stacks", "queues", "lists"
         - Print the elements at the 0th and 2nd indices of that list
          */
+		jedis.rpush("lineards", "stacks", "queues", "lists");
+		System.out.println(jedis.lindex("lineards", 0));
 
 		// Hash
 		/*
@@ -137,6 +145,7 @@ public class JedisMaker {
 		- Increment the nonexistent key "word2" by 1
 		- Retrieve and print the values at both keys in the hash "myhash"
 		*/
+
 
 	    jedis.close();
 	}

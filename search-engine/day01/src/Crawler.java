@@ -9,7 +9,7 @@ import java.util.Queue;
 
 public class Crawler {
 	// the index where the results go
-	private Index index;
+	private JedisIndex index;
 
 	// queue of URLs to be indexed
 	private Queue<String> queue = new LinkedList<>();
@@ -17,7 +17,7 @@ public class Crawler {
 	// fetcher used to get pages from Wikipedia
 	final static WikiFetcher wf = new WikiFetcher();
 
-	public Crawler(String source, Index index) {
+	public Crawler(String source, JedisIndex index) {
 		this.index = index;
 		queue.offer(source);
 	}
@@ -33,8 +33,31 @@ public class Crawler {
 	 * @param limit How many pages to crawl before you stop.
 	 * @throws IOException
 	 */
-	public void crawl(int limit) throws IOException {
-		// TODO
+	public void crawl(boolean testing) throws IOException {
+		//index the page
+			//add all hyperlinks on page to queue using queueInternalLinks
+			//don't index same page repeatedly
+
+		if (queue.isEmpty()) {
+			return;
+		}
+		String url = queue.poll();
+		System.out.println("Crawling " + url);
+
+		if (testing==false && index.isIndexed(url)) {
+			System.out.println("Already indexed.");
+			return;
+		}
+
+		Elements paragraphs;
+		if (testing) {
+			paragraphs = wf.readWikipedia(url);
+		} else {
+			paragraphs = wf.fetchWikipedia(url);
+		}
+		index.indexPage(url, paragraphs);
+		queueInternalLinks(paragraphs);
+		//return url;
 	}
 
 	void queueInternalLinks(Elements paragraphs) {
@@ -59,7 +82,7 @@ public class Crawler {
 	public static void main(String[] args) throws IOException {
 		// make a WikiCrawler
 		Jedis jedis = JedisMaker.make();
-		Index index = new Index();
+		JedisIndex index = new JedisIndex(jedis);
 		String source = "https://en.wikipedia.org/wiki/Java_(programming_language)";
 		Crawler wc = new Crawler(source, index);
 
@@ -68,15 +91,16 @@ public class Crawler {
 		wc.queueInternalLinks(paragraphs);
 
         // TODO: Crawl outward starting at source
+		wc.crawl(true);
 
 		// TODO: Test that your index contains multiple pages.
 		// Here is some sample code that tests your index, which assumes
 		// you have written a getCounts() method in Index, which returns
 		// a map from {url: count} for a given keyword
-		// Map<String, Integer> map = index.getCounts("programming");
-		// for (Map.Entry<String, Integer> entry: map.entrySet()) {
-		// 	System.out.println(entry);
-		// }
+		 Map<String, Integer> map = index.getCounts("programming");
+		 for (Map.Entry<String, Integer> entry: map.entrySet()) {
+		 	System.out.println(entry);
+		 }
 
 	}
 }

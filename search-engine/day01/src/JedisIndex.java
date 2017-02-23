@@ -12,7 +12,7 @@ import java.util.List;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Transaction;
 
-public class Index {
+public class JedisIndex {
 
 	private Jedis jedis;
 
@@ -20,7 +20,7 @@ public class Index {
 	 * Constructor.
 	 * @param jedis
 	 */
-	public Index(Jedis jedis) {
+	public JedisIndex(Jedis jedis) {
 		this.jedis = jedis;
 	}
 
@@ -288,7 +288,7 @@ public class Index {
 	 */
 	public static void main(String[] args) throws IOException {
 		Jedis jedis = JedisMaker.make();
-		Index index = new Index(jedis);
+		JedisIndex index = new JedisIndex(jedis);
 
 		//index.deleteTermCounters();
 		//index.deleteURLSets();
@@ -307,7 +307,7 @@ public class Index {
 	 * @return
 	 * @throws IOException
 	 */
-	private static void loadIndex(Index index) throws IOException {
+	private static void loadIndex(JedisIndex index) throws IOException {
 		WikiFetcher wf = new WikiFetcher();
 
 		String url = "https://en.wikipedia.org/wiki/Java_(programming_language)";
