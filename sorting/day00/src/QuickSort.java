@@ -1,3 +1,4 @@
+import java.util.concurrent.ThreadLocalRandom;
 public class QuickSort extends SortAlgorithm {
 
     private static final int INSERTION_THRESHOLD = 10;
@@ -12,7 +13,15 @@ public class QuickSort extends SortAlgorithm {
     @Override
     public int[] sort(int[] array) {
         // TODO: Sort the array. Make sure you avoid the O(N^2) runtime worst-case
-        return new int[0];
+        shuffleArray(array);
+        quickSort(array, 0, array.length-1);
+        return array;
+    }
+    private void shuffleArray(int[] array) {
+        for (int i = 0; i < array.length; i++) {
+            int randIndex = ThreadLocalRandom.current().nextInt(i+1);
+            swap(array, i, randIndex);
+        }
     }
 
     /**
@@ -24,7 +33,11 @@ public class QuickSort extends SortAlgorithm {
      * @param high The ending index of the subarray being considered (inclusive)
      */
     public void quickSort(int[] a, int low, int high) {
-        // TODO
+        if(low < high){
+            int p = partition(a, low, high);
+            quickSort(a, low, p-1);
+            quickSort(a, p+1, high);
+        }
     }
 
 
@@ -37,8 +50,19 @@ public class QuickSort extends SortAlgorithm {
      * @param high The ending index of the subarray being considered (inclusive)
      */
     public int partition(int[] array, int low, int high) {
-        // TODO
-        return 0;
+        int pivot = array[low];
+        int i = low + 1;
+
+        for (int j = low+1; j<=high; j++){ //inclusive
+            if(array[j] < pivot){
+
+                swap(array, i, j);
+                i++;
+            }
+        }
+        swap(array, low, i-1);
+        return i-1;
+
     }
 
 }

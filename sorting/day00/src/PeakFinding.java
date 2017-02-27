@@ -53,7 +53,15 @@ public class PeakFinding {
 
 
     public static int findOneDPeak(int[] nums){
-    	// TODO
+        int lo = 0;
+        int hi = nums.length;
+        while (lo < hi) {
+            int mid = (hi+lo)/2;
+            int direction = peak(mid, nums);
+            if (direction == 0) return mid;
+            else if (direction == -1) hi = mid;
+            else if (direction == 1) lo = mid+1;
+        }
         return -1;
     }
 
