@@ -61,7 +61,38 @@ public class PeakFinding {
     }
 
     public static int[] findTwoDPeak(int[][] nums) {
-        // TODO
+        int loX = 0;
+        int hiX = nums[0].length;
+        int loY = 0;
+        int hiY = nums.length;
+        boolean middleColumn = true;
+        while (hiX > loX && hiY > loY) {
+            if (middleColumn) {
+                //find max of the middle column
+                int midX = (hiX + loX) / 2;
+                int yMax = maxYIndex(midX, loY, hiY, nums);
+                int peak = peakX(midX, yMax, nums);
+                if (peak == 0)
+                    return new int[]{yMax, midX};
+                else if (peak == -1)
+                    hiX = midX;
+                else if (peak == 1)
+                    loX = midX + 1;
+            } else {
+                //find max of the middle row
+                int midY = (hiY + loY) / 2;
+                int xMax = maxXIndex(midY, loX, hiX, nums);
+                int peak = peakY(xMax, midY, nums);
+                if (peak == 0)
+                    return new int[]{midY, xMax};
+                else if (peak == -1)
+                    hiY = midY;
+                else if (peak == 1)
+                    loY = midY + 1;
+            }
+            //rotate each time
+            middleColumn = ! middleColumn;
+        }
         return null;
     }
 

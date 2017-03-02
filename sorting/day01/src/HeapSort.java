@@ -16,14 +16,29 @@ public class HeapSort extends SortAlgorithm {
 
     // Recursively corrects the position of element indexed i: check children, and swap with larger child if necessary.
     public void heapify(int i) {
-        // TODO
+        int left = leftChild(i), right = rightChild(i);
+
+        int largest = i;
+        //figure out the largest between i, left, and right
+        if (left < size && heap[left] > heap[i]) largest = left;
+        if (right < size && heap[right] > heap[largest]) largest = right;
+
+        if(largest != i){
+            swap(heap, largest, i);
+            heapify(largest);
+        }
+
     }
 
     // Given the array, build a heap by correcting every non-leaf's position.
     public void buildHeapFrom(int[] array) {
         this.heap = array;
         this.size = array.length;
-        // TODO
+
+        int m = this.size/2;
+        for(int i=m;i>=0; i--){
+            heapify(i);
+        }
     }
 
     /**
@@ -37,7 +52,9 @@ public class HeapSort extends SortAlgorithm {
     public int[] sort(int[] array) {
         buildHeapFrom(array);
         for (int i=size-1; i>0; i--) {
-            // TODO
+            swap(heap, i, 0);
+            size --;
+            heapify(0);
         }
         return heap;
     }

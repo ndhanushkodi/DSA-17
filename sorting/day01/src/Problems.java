@@ -36,13 +36,41 @@ public class Problems {
 
 
     /**
-     *
+     * nlogn
      * @param inputStream an input stream of integers
      * @return the median of the stream, after each element has been added
      */
     public static double[] runningMedian(int[] inputStream) {
         double[] runningMedian = new double[inputStream.length];
-        // TODO
+
+        // Maintain a PQ around the median.
+        // Always make sure 0 <= belowMedian.size() - aboveMedian.size <= 1
+        PriorityQueue<Integer> belowMedian = maxPQ();
+        PriorityQueue<Integer> aboveMedian = minPQ();
+
+        for(int i = 0; i<inputStream.length; i++){
+            int input = inputStream[i];
+            // Insert into belowMedian if aboveMedian is empty or the value is below the top of aboveMedian.
+            boolean insertIntoBelow = aboveMedian.isEmpty() || input <= aboveMedian.peek();
+
+            //Insert into one of the PQs
+            boolean success = (insertIntoBelow) ? belowMedian.offer(input) : aboveMedian.offer(input);
+
+            // Correct the sizes of the PQs according to the rule above
+            if (belowMedian.size() > aboveMedian.size() + 1) aboveMedian.offer(belowMedian.poll());
+            if (belowMedian.size() < aboveMedian.size()) belowMedian.offer(aboveMedian.poll());
+
+            // Calculate the median
+            if (belowMedian.size() > aboveMedian.size())
+                runningMedian[i] = belowMedian.peek();
+            else
+                runningMedian[i] = (belowMedian.peek() + aboveMedian.peek()) / 2.0;
+
+
+
+
+        }
+
         return runningMedian;
     }
 
