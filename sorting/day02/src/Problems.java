@@ -1,7 +1,11 @@
 public class Problems {
 
     static void sortNumsBetween100s(int[] A) {
-        // TODO
+        for (int i = 0; i < A.length; i++)
+            A[i] += 100;
+        CountingSort.countingSort(A);
+        for (int i = 0; i < A.length; i++)
+            A[i] -= 100;
     }
 
     /**
