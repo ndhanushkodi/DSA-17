@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 
 public class BinarySearchTree<T extends Comparable<T>> {
@@ -28,8 +29,16 @@ public class BinarySearchTree<T extends Comparable<T>> {
     }
 
     public List<T> inOrderTraversal() {
-        // TODO
-        return null;
+        List<T> list = new ArrayList<>();
+        inOrderTraversal(root, list);
+        return list;
+    }
+    private void inOrderTraversal(TreeNode<T> node, List<T> list){
+        if(node != null){
+            inOrderTraversal(node.leftChild, list);
+            list.add(node.key);
+            inOrderTraversal(node.rightChild, list);
+        }
     }
 
     /**
@@ -66,8 +75,9 @@ public class BinarySearchTree<T extends Comparable<T>> {
             replacement = (n.hasRightChild()) ? n.rightChild : n.leftChild; // replacement is the non-null child
         else {
             // Case 3: two children
-            // TODO
-            replacement = null;
+            replacement = findPredecessor(n);
+            delete(replacement);
+            replacement.moveChildrenFrom(n);
         }
 
         // Put the replacement in its correct place, and set the parent.
@@ -96,13 +106,37 @@ public class BinarySearchTree<T extends Comparable<T>> {
     }
 
     private TreeNode<T> findPredecessor(TreeNode<T> n) {
-        // TODO
-        return null;
+        TreeNode<T> predecessor;
+        if(n.leftChild != null){
+            predecessor = n.leftChild;
+            while(predecessor.rightChild != null)
+                predecessor = predecessor.rightChild;
+        }
+        else{
+            predecessor = n.parent;
+            while (predecessor !=null && n.isLeftChild()){
+                n = predecessor;
+                predecessor = predecessor.parent;
+            }
+        }
+        return predecessor;
     }
 
     private TreeNode<T> findSuccessor(TreeNode<T> n) {
-        // TODO
-        return null;
+        TreeNode<T> successor;
+        if (n.rightChild != null) {
+            successor = n.rightChild;
+            while (successor.leftChild != null)
+                successor = successor.leftChild;
+        } else {
+            successor = n.parent;
+            while (successor != null && n.isRightChild()) {
+                n = successor;
+                successor = successor.parent;
+            }
+        }
+
+        return successor;
     }
 
     /**
