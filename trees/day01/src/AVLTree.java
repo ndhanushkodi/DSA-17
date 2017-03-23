@@ -1,3 +1,5 @@
+import sun.reflect.generics.tree.Tree;
+
 public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
 
     /**
@@ -5,9 +7,10 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
      */
     @Override
     TreeNode<T> delete(TreeNode<T> n, T key) {
-        n = super.delete(n,key);
+        n = super.delete(n, key);
         if(n != null) {
-            // TODO: Update height and balance tree
+            n.height = height(n);
+            return balance(n);
         }
         return null;
     }
@@ -16,9 +19,10 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
      */
     @Override
     TreeNode<T> insert(TreeNode<T>  n, T key) {
-        n = super.insert(n,key);
+        n = super.insert(n, key);
         if(n != null) {
-            // TODO: update height and balance tree
+            n.height = height(n);
+            return balance(n);
         }
         return null;
     }
@@ -38,9 +42,16 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
 
     // Return the height of the given node. Return -1 if null.
     private int height(TreeNode<T> n) {
-        // TODO
-        return 0;
+        if (n == null){
+            return -1;
+        }
+        return Math.max(height(n.leftChild), height(n.rightChild)) + 1;
     }
+
+//    private int height(TreeNode x) {
+//        if (x == null) return -1;
+//        return x.height;
+//    }
 
     public int height() {
         return Math.max(height(root),0);
@@ -48,8 +59,19 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
 
     // Restores the AVL tree property of the subtree.
     TreeNode<T> balance(TreeNode<T> n) {
-        // TODO
-        return null;
+        if (balanceFactor(n) > 1) {
+            if (balanceFactor(n.rightChild) < 0) {
+                n.rightChild = rotateRight(n.rightChild);
+            }
+            n = rotateLeft(n);
+        }
+        else if (balanceFactor(n) < -1) {
+            if (balanceFactor(n.leftChild) > 0) {
+                n.leftChild = rotateLeft(n.leftChild);
+            }
+            n = rotateRight(n);
+        }
+        return n;
     }
 
     /**
@@ -60,23 +82,50 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
      * most one.
      */
     private int balanceFactor(TreeNode<T> n) {
-        // TODO
-        return 0;
+        return height(n.rightChild) - height(n.leftChild);
     }
 
     /**
      * Perform a right rotation on node `n`. Return the head of the rotated tree.
      */
     private TreeNode<T> rotateRight(TreeNode<T> n) {
-        // TODO
-        return null;
+        TreeNode<T> B = n;
+        TreeNode<T> A = n.leftChild;
+        TreeNode<T> beta = A.rightChild;
+        A.rightChild = B;
+        B.leftChild = beta;
+        B.height = height(B);
+        A.height = height(A);
+        return A;
     }
+//    private TreeNode<T> rotateRight(TreeNode<T> x) {
+//        TreeNode<T> y = x.leftChild;
+//        x.leftChild = y.rightChild;
+//        y.rightChild = x;
+//        x.height = 1 + Math.max(height(x.leftChild), height(x.rightChild));
+//        y.height = 1 + Math.max(height(y.leftChild), height(y.rightChild));
+//        return y;
+//    }
 
     /**
      * Perform a left rotation on node `n`. Return the head of the rotated tree.
      */
     private TreeNode<T> rotateLeft(TreeNode<T> n) {
-        // TODO
-        return null;
+        TreeNode<T> A = n;
+        TreeNode<T> B = n.rightChild;
+        TreeNode<T> beta = B.leftChild;
+        B.leftChild = A;
+        A.rightChild = beta;
+        A.height = height(A);
+        B.height = height(B);
+        return B;
     }
+//    private TreeNode<T> rotateLeft(TreeNode<T> x) {
+//        TreeNode<T> y = x.rightChild;
+//        x.rightChild = y.leftChild;
+//        y.leftChild = x;
+//        x.height = 1 + Math.max(height(x.leftChild), height(x.rightChild));
+//        y.height = 1 + Math.max(height(y.leftChild), height(y.rightChild));
+//        return y;
+//    }
 }
