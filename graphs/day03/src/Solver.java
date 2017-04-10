@@ -27,7 +27,7 @@ public class Solver {
             this.moves = moves;
             this.prev = prev;
             // TODO: Compute cost of board state according to A*
-            cost = 0;
+            cost = this.moves + board.manhattan();
         }
 
         @Override
@@ -51,8 +51,11 @@ public class Solver {
      * Return the root state of a given state
      */
     private State root(State state) {
-    	// TODO: Your code here
-        return null;
+        State current = state;
+        while (current.prev != null) {
+            current = current.prev;
+        }
+        return current;
     }
 
     /*
@@ -61,28 +64,75 @@ public class Solver {
      * and a identify the shortest path to the the goal state
      */
     public Solver(Board initial) {
-    	// TODO: Your code here
+
+        Set<State> open = new HashSet<>();
+        Set<State> closed = new HashSet<>();
+        if (initial == null) throw new IllegalArgumentException("Initial board state was null");
+        if(!initial.solvable()) return; // unsolvable
+        // Create the initial "START" state and insert on open set
+        State initBoard = new State(initial, 0, null);
+        open.add(initBoard);
+
+        while(!open.isEmpty()){
+            // Get node from open set with lowest cost and remove from set
+            State current = Collections.min(open);
+            open.remove(current);
+
+            //If this is solution, update things accordingly
+            if(current.board.isGoal()){
+                State root = root(current);
+                if(!root.board.equals((initial))) break;
+                solved = true;
+                minMoves = current.moves;
+                solutionState = current;
+                break;
+            }
+
+            Iterable<Board> neighbors = current.board.neighbors();
+            for(Board neighbor : neighbors){
+                State neighborState = new State(neighbor, current.moves+1, current);
+                //add neighborState to open only if it's board is not already in the open
+                //or closed sets. if its already there, add it to openset ONLY if the cost is
+                //less than what it was
+                State openState = find(open, neighbor);
+                State closedState = find(closed, neighbor);
+                if (openState != null && neighborState.cost > openState.cost) continue;
+                if (closedState != null && neighborState.cost > closedState.cost) continue;
+
+                //passed through those conditions, add it to the open set
+                open.add(neighborState);
+            }
+            closed.add(current);
+        }
     }
+
 
     /*
      * Is the input board a solvable state
      */
     public boolean isSolvable() {
-    	// TODO: Your code here
-        return false;
+    	return solved;
     }
 
     /*
      * Return the sequence of boards in a shortest solution, null if unsolvable
      */
     public Iterable<Board> solution() {
-    	// TODO: Your code here
+        if (isSolvable()) {
+            Stack<Board> sol = new Stack<>();
+            State current = solutionState;
+            while (current != null) {
+                sol.push(current.board);
+                current = current.prev;
+            }
+            return sol;
+        }
         return null;
     }
 
     public State find(Iterable<State> iter, Board b) {
         for (State s : iter) {
-            if (s.board.equals(b)) {
+            if (s.equals(b)) {
                 return s;
             }
         }
@@ -95,7 +145,8 @@ public class Solver {
      * states
      */
     public static void main(String[] args) {
-        int[][] initState = {{8, 6, 7}, {2, 5, 4}, {3, 0, 1}};
+    //int[][] initState = {{8, 6, 7}, {2, 5, 4}, {3, 0, 1}};
+        int[][] initState = {{1, 2, 3}, {0, 4, 5}, {8, 6, 7}};
         Board initial = new Board(initState);
 
         // Solve the puzzle
